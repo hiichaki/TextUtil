@@ -7,13 +7,19 @@ public class Indexes {
 	private String text;
 	private String beginString;
 	private String endString;
+	private String occurence;
 
 	public Indexes(String text, String beginString, String endString) {
-		beginIndex = text.indexOf(beginString);
-		endIndex = text.indexOf(endString, beginIndex);
+		this.beginIndex = text.indexOf(beginString);
+		this.endIndex = text.indexOf(endString, beginIndex);
 		this.text = text;
 		this.beginString = beginString;
 		this.endString = endString;
+		if (isValid()) {
+			this.occurence = text.substring(beginIndex, endIndex);
+		} else {
+			this.occurence = null;
+		}
 	}
 
 	public boolean next() {
@@ -40,6 +46,14 @@ public class Indexes {
 
 	public void setEndIndex(int endIndex) {
 		this.endIndex = endIndex;
+	}
+
+	public String getOccurence() {
+		return occurence;
+	}
+
+	public void setOccurence(String occurence) {
+		this.occurence = occurence;
 	}
 
 }
