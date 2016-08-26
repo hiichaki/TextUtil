@@ -1,49 +1,55 @@
 package com.text.util;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
+import com.text.main.App;
 import com.text.model.Indexes;
 
 public class TextUtil {
 
-	static String property = readFile("");
+	public static String doReplace(String text) {
+		boolean changed = false;
+		for (int i = 0; i < StaticVars.BEGIN_TAG.length; ++i) {
+			Indexes indexes = new Indexes(text, StaticVars.BEGIN_TAG[i], "/>");
 
-	public static String readFile(String path) {
-		try {
-			byte[] encoded = Files.readAllBytes(Paths.get(path));
-			return new String(encoded, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			e.printStackTrace();
+			for (int j = 0; j < StaticVars.BEGIN_PHRASE.length; ++j) {
+				while (indexes.isValid()) {
+					String tag = indexes.getOccurence();
+					String phrase = new Indexes(tag, StaticVars.BEGIN_PHRASE[j], "\"").getOccurence().replace("\"", "");
+					String propertyVar = getVariableFromProperties(phrase);
+					if (propertyVar != null) {
+						text = text.replace(phrase, propertyVar);
+						changed = true;
+						System.out.println(phrase + " replaced with " + propertyVar);
+					}
+					indexes.next();
+				}
+			}
+		}
+		if (changed) {
+			return text;
+		}
+
+		return null;
+	}
+
+	public static String getVariableFromProperties(String phrase) {
+		int index = App.properties.indexOf(phrase + "\n");
+		if (index > 0) {
+			int beginIndex;
+			int endIndex = -1;
+			for (int i = index; i > 0; --i) {
+				if (App.properties.charAt(i) == '=') {
+					endIndex = i;
+				}
+				if (App.properties.charAt(i) == '\n') {
+					beginIndex = i + 1;
+					return App.properties.substring(beginIndex, endIndex);
+				}
+			}
 		}
 		return null;
 
 	}
-
-	public static void findFieldinJsp(String text) {
-		Indexes indexes = new Indexes(text, "<s:textfield", "/>");
-		String a = "<s:textarea key=";
-
-		if (indexes.isValid()) {
-			do {
-				String field = indexes.getOccurence();
-				String phrase = findOccurenceInField(field, "key=\"");
-				phrase = findOccurenceInField(field, "label=\"");
-
-			} while (indexes.next());
-		}
-
-	}
-
-	public static String findOccurenceInField(String field, String beginString) {
-		Indexes indexes = new Indexes(field, beginString, "\"");
-		return indexes.getOccurence();
-	}
-
-	public static void findInProperty(String phrase) {
-
-	}
+	
+	
 
 }

@@ -10,11 +10,14 @@ public class Indexes {
 	private String occurence;
 
 	public Indexes(String text, String beginString, String endString) {
-		this.beginIndex = text.indexOf(beginString);
-		this.endIndex = text.indexOf(endString, beginIndex);
 		this.text = text;
+		
 		this.beginString = beginString;
 		this.endString = endString;
+		
+		this.beginIndex = text.indexOf(beginString) + beginString.length();
+		this.endIndex = text.indexOf(endString, beginIndex+2);
+		
 		if (isValid()) {
 			this.occurence = text.substring(beginIndex, endIndex);
 		} else {
@@ -23,13 +26,22 @@ public class Indexes {
 	}
 
 	public boolean next() {
-		beginIndex = text.indexOf(beginString, endIndex);
-		endIndex = text.indexOf(endString, beginIndex);
-		return isValid();
+		this.beginIndex = text.indexOf(beginString, endIndex);
+		this.endIndex = text.indexOf(endString, beginIndex);
+		if(isValid()) {
+			occurence = text.substring(beginIndex + beginString.length(), endIndex);
+			return true;
+		}
+		return false;
 	}
 
 	public boolean isValid() {
 		return (beginIndex > 0 && endIndex > 0);
+	}
+
+	@Override
+	public String toString() {
+		return "Indexes [beginIndex=" + beginIndex + ", endIndex=" + endIndex + "]";
 	}
 
 	public int getBeginIndex() {
