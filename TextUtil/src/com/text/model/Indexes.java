@@ -4,10 +4,22 @@ public class Indexes {
 
 	private int beginIndex;
 	private int endIndex;
+	private String text;
+	private String beginString;
+	private String endString;
 
-	public Indexes(String text, String begin, String end) {
-		beginIndex = text.indexOf(begin);
-		endIndex = text.indexOf(end, beginIndex);
+	public Indexes(String text, String beginString, String endString) {
+		beginIndex = text.indexOf(beginString);
+		endIndex = text.indexOf(endString, beginIndex);
+		this.text = text;
+		this.beginString = beginString;
+		this.endString = endString;
+	}
+
+	public boolean next() {
+		beginIndex = text.indexOf(beginString, endIndex);
+		endIndex = text.indexOf(endString, beginIndex);
+		return isValid();
 	}
 
 	public boolean isValid() {

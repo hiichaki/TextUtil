@@ -20,7 +20,6 @@ public class TextUtil {
 		while (indexes.isValid()) {
 			String field = text.substring(indexes.getBeginIndex(), indexes.getEndIndex());
 
-			indexes = new Indexes(text, begin, end);
 		}
 
 	}
