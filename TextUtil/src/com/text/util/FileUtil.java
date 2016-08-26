@@ -7,11 +7,12 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class FileUtil {
-	
+
 	public static String readFile(String path) {
 		try {
 			byte[] encoded = Files.readAllBytes(Paths.get(path));
@@ -22,16 +23,16 @@ public class FileUtil {
 		return null;
 
 	}
-	
-	public static ArrayList<String> allJspFiles(String path) {
-		ArrayList<String> filesJsp = new ArrayList<String>();
+
+	public static ArrayList<Path> allJspFiles(String path) {
+		ArrayList<Path> filesJsp = new ArrayList<Path>();
 		try {
 			Files.walk(Paths.get(path)).forEach(filePath -> {
 				if (Files.isRegularFile(filePath)) {
 					String[] split = filePath.toString().split("\\.");
 					String extension = split[split.length - 1].toLowerCase();
-					if(extension.equals("jsp")) {
-						filesJsp.add(filePath.getFileName().toString());
+					if (extension.equals("jsp")) {
+						filesJsp.add(filePath);
 					}
 				}
 			});
@@ -40,18 +41,18 @@ public class FileUtil {
 		}
 		return filesJsp;
 	}
-	
+
 	public static void write(String text, String path) {
 		try {
 			File file = new File(path);
 			PrintWriter writer = new PrintWriter(file.getAbsolutePath(), "UTF-8");
 			writer.print(text);
 			writer.close();
-			System.out.println("writing: "+file.getAbsolutePath());
+			System.out.println("writing: " + file.getAbsolutePath());
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 }

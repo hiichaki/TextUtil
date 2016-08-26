@@ -15,6 +15,10 @@ public class Indexes {
 		this.beginString = beginString;
 		this.endString = endString;
 		
+		restart();
+	}
+
+	public void restart() {
 		this.beginIndex = text.indexOf(beginString) + beginString.length();
 		this.endIndex = text.indexOf(endString, beginIndex+2);
 		
@@ -24,7 +28,7 @@ public class Indexes {
 			this.occurence = null;
 		}
 	}
-
+	
 	public boolean next() {
 		this.beginIndex = text.indexOf(beginString, endIndex);
 		this.endIndex = text.indexOf(endString, beginIndex);
